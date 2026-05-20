@@ -492,22 +492,27 @@ public class App extends JPanel implements ActionListener, KeyListener {
     // ================= MAIN =================
     public static void main(String[] args) {
 
-        JFrame frame = new JFrame();
-
-        App game = new App();
-
-        frame.add(game);
-
-        frame.setTitle("Realistic Crazy Snake Game 🐍");
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        frame.setResizable(false);
-
-        frame.pack();
-
-        frame.setLocationRelativeTo(null);
-
-        frame.setVisible(true);
+    if (java.awt.GraphicsEnvironment.isHeadless()) {
+        System.out.println("Headless environment detected. Snake Game requires a display.");
+        return;
     }
+
+    JFrame frame = new JFrame();
+
+    App game = new App();
+
+    frame.add(game);
+
+    frame.setTitle("Realistic Crazy Snake Game 🐍");
+
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    frame.setResizable(false);
+
+    frame.pack();
+
+    frame.setLocationRelativeTo(null);
+
+    frame.setVisible(true);
+}
 }
