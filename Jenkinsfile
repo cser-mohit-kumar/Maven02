@@ -24,7 +24,7 @@ pipeline {
             steps {
                 sh '''
                     export DISPLAY=:1
-                    java -jar target/Maven-1.0-SNAPSHOT.jar &
+                    java -jar target/Maven-1.0-SNAPSHOT.jar
                 '''
             }
         }
