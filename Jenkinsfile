@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9.x'
+        jdk   'JDK-17'
+    }
+
+    stages {
+
+        stage('Clone') {
+            steps {
+                git url: 'https://github.com/your-username/snake-game.git',
+                    branch: 'main'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Run') {
+            steps {
+                sh '''
+                    export DISPLAY=:1
+                    java -jar target/Maven-1.0-SNAPSHOT.jar &
+                '''
+            }
+        }
+
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
