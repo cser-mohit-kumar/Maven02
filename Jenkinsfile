@@ -22,8 +22,12 @@ pipeline {
         }
         stage('Run Container') {
             steps {
-                sh 'docker run -d --name $CONTAINER_NAME $IMAGE_NAME'
-            }
+                sh 'xhost +local:docker'
+                sh 'docker run -d --name $CONTAINER_NAME \
+                -e DISPLAY=$DISPLAY \
+                -v /tmp/.X11-unix:/tmp/.X11-unix \
+                 $IMAGE_NAME'
+                }
         }
     }
     post {
