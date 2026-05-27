@@ -3,6 +3,7 @@ pipeline {
     environment {
         IMAGE_NAME = "snake-game"
         CONTAINER_NAME = "snake-container"
+        DISPLAY = ":1"
     }
     stages {
         stage('Build Maven Project') {
@@ -22,20 +23,15 @@ pipeline {
         }
         stage('Run Container') {
             steps {
-                sh 'xhost +local:docker'
                 sh 'docker run -d --name $CONTAINER_NAME \
-                -e DISPLAY=$DISPLAY \
-                -v /tmp/.X11-unix:/tmp/.X11-unix \
-                 $IMAGE_NAME'
-                }
+                    -e DISPLAY=:1 \
+                    -v /tmp/.X11-unix:/tmp/.X11-unix \
+                    $IMAGE_NAME'
+            }
         }
     }
     post {
-        success {
-            echo 'Pipeline executed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
+        success { echo 'Pipeline executed successfully!' }
+        failure { echo 'Pipeline failed!' }
     }
 }
