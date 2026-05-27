@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    tools {
-        jdk 'JDK17'
-        maven 'Maven3'
-    }
     environment {
         IMAGE_NAME = "snake-game"
         CONTAINER_NAME = "snake-container"
@@ -16,22 +12,22 @@ pipeline {
         }
         stage('Build Maven Project') {
             steps {
-                bat 'mvn clean package'
+                sh 'mvn clean package'
             }
         }
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t %IMAGE_NAME% .'
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
         stage('Remove Old Container') {
             steps {
-                bat 'docker rm -f %CONTAINER_NAME% || exit 0'
+                sh 'docker rm -f $CONTAINER_NAME || true'
             }
         }
         stage('Run Container') {
             steps {
-                bat 'docker run -d --name %CONTAINER_NAME% %IMAGE_NAME%'
+                sh 'docker run -d --name $CONTAINER_NAME $IMAGE_NAME'
             }
         }
     }
