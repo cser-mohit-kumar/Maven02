@@ -1,39 +1,46 @@
 pipeline {
-    agent {
-        node {
-            label 'built-in'
-        }
+    agent any
+    tools {
+        jdk 'JDK17'
+        maven 'Maven3'
     }
-
+    environment {
+        IMAGE_NAME = "snake-game"
+        CONTAINER_NAME = "snake-container"
+    }
     stages {
-
-        stage('Clone') {
+        stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/cser-mohit-kumar/Maven02.git',
-                    branch: 'main'
+                git 'https://github.com/cser-mohit-kumar/Maven02.git'
             }
         }
-
-        stage('Build') {
+        stage('Build Maven Project') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                bat 'mvn clean package'
             }
         }
-
-        stage('Run') {
+        stage('Build Docker Image') {
             steps {
-                sh '''
-                    export DISPLAY=:1
-                    java -jar target/Maven-1.0-SNAPSHOT.jar
-                '''
+                bat 'docker build -t %IMAGE_NAME% .'
             }
         }
-
+        stage('Remove Old Container') {
+            steps {
+                bat 'docker rm -f %CONTAINER_NAME% || exit 0'
+            }
+        }
+        stage('Run Container') {
+            steps {
+                bat 'docker run -d --name %CONTAINER_NAME% %IMAGE_NAME%'
+            }
+        }
     }
-
     post {
-        always {
-            cleanWs()
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
