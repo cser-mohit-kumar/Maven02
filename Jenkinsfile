@@ -5,11 +5,6 @@ pipeline {
         CONTAINER_NAME = "snake-container"
     }
     stages {
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/cser-mohit-kumar/Maven02.git'
-            }
-        }
         stage('Build Maven Project') {
             steps {
                 sh 'mvn clean package'
