@@ -6,11 +6,6 @@ pipeline {
         DISPLAY = ":1"
     }
     stages {
-        stage('Build Maven Project') {
-            steps {
-                sh 'mvn clean package'
-            }
-        }
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $IMAGE_NAME .'
