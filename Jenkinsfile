@@ -1,32 +1,36 @@
 pipeline {
     agent any
+
     environment {
         IMAGE_NAME = "snake-game"
-        CONTAINER_NAME = "snake-container"
-        DISPLAY = ":1"
     }
+
     stages {
+
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'  // ← fix this
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                // If Jenkins runs on Linux, use sh not bat
+                sh 'docker build -t ${IMAGE_NAME} .'
             }
         }
-        stage('Remove Old Container') {
+
+        stage('Load Image into Minikube') {
             steps {
-                sh 'docker rm -f $CONTAINER_NAME || true'
+                sh 'minikube image load ${IMAGE_NAME}'
             }
         }
-        stage('Run Container') {
+
+        stage('Deploy to Kubernetes') {
             steps {
-                sh 'docker run -d --name $CONTAINER_NAME \
-                    -e DISPLAY=:1 \
-                    -v /tmp/.X11-unix:/tmp/.X11-unix \
-                    $IMAGE_NAME'
+                sh 'kubectl apply -f deployment.yml'   // ← match your actual filename
+                sh 'kubectl apply -f service.yml'
             }
         }
-    }
-    post {
-        success { echo 'Pipeline executed successfully!' }
-        failure { echo 'Pipeline failed!' }
     }
 }
